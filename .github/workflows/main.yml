@@ -6,7 +6,7 @@ name: Convert svg to png
 # events but only for the master branch
 on:
   push:
-    branches: [ feature/convert-png-test ]
+    branches: [ master ]
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -24,18 +24,11 @@ jobs:
       with:
         node-version: 12.x
     - run: npm install -g svgexport
-    # Runs a single command using the runners shell
-    - name: Run a one-line script
-      run: echo Hello, world!
-
-    - run: ls
-    # Runs a set of commands using the runners shell
     - name: Convert icon color
       run: find ./src/images/icons -type f -name "*.svg" -print0 | xargs -0 sed -i -e 's/stroke=\"[#a-zA-Z0-9]*\"/stroke=\"#FFFFFF\"/g'
     - run: mkdir png
     - name: Convert svg to png
       run: find ./src/images/icons -name "*.svg" -print0 | while read -r -d '' file; do svgexport "$file" ./png/$(basename ${file%%.svg}).png png pad 256:256 ; done
-      #run: find ./src/images/icons -type f -name "*.svg" -print0 | xargs -I VAR -0 svgexport VAR ${VAR%.*}.png pad 256:256
     - name: git setting
       run: |
         git config --local user.email "tarukosu0@gmail.com"
@@ -45,5 +38,5 @@ jobs:
         git checkout -b hololab/png
         git add png
         git commit -m "add png"
-        git push origin hololab/png
+        git push -f origin hololab/png
 
