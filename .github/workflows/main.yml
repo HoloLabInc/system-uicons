@@ -32,6 +32,8 @@ jobs:
     # Runs a set of commands using the runners shell
     - name: Convert icon color
       run: find ./src/images/icons -type f -name "*.svg" -print0 | xargs -0 sed -i -e 's/stroke=\"[#a-zA-Z0-9]*\"/stroke=\"#FFFFFF\"/g'
+    - run: mkdir png
     - name: Convert svg to png
-      run: find ./src/images/icons -type f -name "*.svg" -print0 | xargs -I VAR -0 svgexport VAR ${VAR%.*}.png pad 256:256
+      run: find ./src/images/icons -name "*.svg" -print0 | while read -r -d '' file; do svgexport "$file" ./png/$(basename ${file%%.svg}).png png pad 256:256 ; done
+      #run: find ./src/images/icons -type f -name "*.svg" -print0 | xargs -I VAR -0 svgexport VAR ${VAR%.*}.png pad 256:256
 
