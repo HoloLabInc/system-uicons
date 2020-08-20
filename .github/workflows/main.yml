@@ -36,4 +36,14 @@ jobs:
     - name: Convert svg to png
       run: find ./src/images/icons -name "*.svg" -print0 | while read -r -d '' file; do svgexport "$file" ./png/$(basename ${file%%.svg}).png png pad 256:256 ; done
       #run: find ./src/images/icons -type f -name "*.svg" -print0 | xargs -I VAR -0 svgexport VAR ${VAR%.*}.png pad 256:256
+    - name: git setting
+      run: |
+        git config --local user.email "tarukosu0@gmail.com"
+        git config --local user.name "tarukosu"
+    - name: push to png branch
+      run: |
+        git checkout -b hololab/png
+        git add png
+        git commit -m "add png"
+        git push origin hololab/png
 
