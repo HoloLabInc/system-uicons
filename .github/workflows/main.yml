@@ -33,4 +33,4 @@ jobs:
     - name: Convert icon color
       run: find ./src/images/icons -type f -name "*.svg" -print0 | xargs -0 sed -i -e 's/stroke=\"[#a-zA-Z0-9]*\"/stroke=\"#FFFFFF\"/g'
     - name: Convert svg to png
-      run: find ./src/images/icons -type f -name "*.svg" -print0 | xargs -0 svgexport.cmd pad 256:256 test.png
+      run: find ./src/images/icons -type f -name "*.svg" -print0 | xargs -0 svgexport pad 256:256 test.png
