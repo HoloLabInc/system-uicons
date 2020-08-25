@@ -8,7 +8,7 @@ on:
   push:
     branches: [ master, feature/convert-png-test ]
   workflow_dispatch:
-  
+
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   # This workflow contains a single job called "build"
@@ -25,8 +25,10 @@ jobs:
       with:
         node-version: 12.x
     - run: npm install -g svgexport
-    # - name: Convert icon color
-    #  run: find ./src/images/icons -type f -name "*.svg" -print0 | xargs -0 sed -i -e 's/stroke=\"[#a-zA-Z0-9]*\"/stroke=\"#FFFFFF\"/g'
+    - name: Convert icon color to black
+      run: |
+        find ./src/images/icons -type f -name "*.svg" -print0 | xargs -0 sed -i -e 's/stroke=\"#[a-zA-Z0-9]*\"/stroke=\"#000000\"/g'
+        find ./src/images/icons -type f -name "*.svg" -print0 | xargs -0 sed -i -e 's/fill=\"#[a-zA-Z0-9]*\"/fill=\"#000000\"/g'
     - run: mkdir png
     - name: Convert svg to png
       run: find ./src/images/icons -name "*.svg" -print0 | while read -r -d '' file; do svgexport "$file" ./png/$(basename ${file%%.svg}).png png pad 256:256 ; done
