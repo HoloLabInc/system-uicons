@@ -1,0 +1,45 @@
+# This is a basic workflow to help you get started with Actions
+
+name: Convert svg to png
+
+# Controls when the action will run. Triggers the workflow on push or pull request
+# events but only for the master branch
+on:
+  push:
+    branches: [ master, hololab/convert-to-png ]
+  workflow_dispatch:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  build:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+    # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+    - uses: actions/checkout@v2
+    - name: Use Node.js
+      uses: actions/setup-node@v1
+      with:
+        node-version: 12.x
+    - run: npm install -g svgexport
+    - name: Convert icon color to black
+      run: |
+        find ./src/images/icons -type f -name "*.svg" -print0 | xargs -0 sed -i -e 's/stroke=\"#[a-zA-Z0-9]*\"/stroke=\"#000000\"/g'
+        find ./src/images/icons -type f -name "*.svg" -print0 | xargs -0 sed -i -e 's/fill=\"#[a-zA-Z0-9]*\"/fill=\"#000000\"/g'
+    - run: mkdir png
+    - name: Convert svg to png
+      run: find ./src/images/icons -name "*.svg" -print0 | while read -r -d '' file; do svgexport "$file" ./png/$(basename ${file%%.svg}).png png pad 256:256 ; done
+    - name: git setting
+      run: |
+        git config --local user.email "tarukosu0@gmail.com"
+        git config --local user.name "tarukosu"
+    - name: push to png branch
+      run: |
+        git checkout -b hololab/png
+        git add png
+        git commit -m "add png"
+        git push -f origin hololab/png
+
